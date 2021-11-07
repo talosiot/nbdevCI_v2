@@ -11,6 +11,7 @@ runs:
         - name: Install the library
           shell: bash
           run: |
+            sudo pip3 install awsiotsdk
             pip install .
             pip install nbdev==1.1.22
         - name: Read all notebooks
