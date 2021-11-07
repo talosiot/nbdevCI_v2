@@ -1,0 +1,38 @@
+name: nbdevCI_v2
+description: Run CI steps on an nbdev project.
+inputs:
+    nbdev_test_cmd:
+        description: "Command to run to test nbs"
+        default: "nbdev_test_nbs"
+
+runs:
+    using: "composite"
+    steps:
+        - name: Install the library
+          shell: bash
+          run: |
+            pip install .
+            pip install nbdev==1.1.22
+        - name: Read all notebooks
+          shell: bash
+          run: |
+            nbdev_read_nbs
+        - name: Check if all notebooks are cleaned
+          shell: bash
+          run: |
+            echo "Check we are starting with clean git checkout"
+            git status
+            if [ -n "$(git status -uno -s)" ]; then echo "git status is not clean"; false; fi
+            echo "Trying to strip out notebooks"
+            nbdev_clean_nbs
+            echo "Check that strip out was unnecessary"
+            git status -s # display the status to see which nbs need cleaning up
+            if [ -n "$(git status -uno -s)" ]; then echo -e "!!! Detected unstripped out notebooks\n!!!Remember to run nbdev_install_git_hooks"; false; fi
+        - name: Check if there is no diff library/notebooks
+          shell: bash
+          run: |
+            if [ -n "$(nbdev_diff_nbs)" ]; then echo -e "!!! Detected difference between the notebooks and the library"; echo "$(nbdev_diff_nbs)"; false; fi
+        - name: Run tests
+          shell: bash
+          run: |
+            ${{ inputs.nbdev_test_cmd }}
