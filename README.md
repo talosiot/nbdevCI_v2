@@ -1,9 +1,10 @@
-nbdevCI
-CI tools for nbdev projects
+# nbdevCI
+> CI tools for nbdev projects
 
-Use
-Use in a .github/workflows file.
+## Use
+Use in a `.github/workflows` file.
 
+```yaml
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,9 +24,11 @@ jobs:
                 IdentityFile ~/.ssh/github_actions
                 StrictHostKeyChecking no
     - uses: talosiot-will/nbdevCI@v1
-This will attempt to clone private repos with a github ssh key. If you don't need private repos you can skip the ssh key step.
+```
 
-Technically StrictHostKeyChecking no opens me up for a man-in-the-middle attack. Since the man would have to be in the middle of github and github, I think the risk is low.
+This will attempt to clone private repos with a github ssh key.  If you don't need private repos you can skip the ssh key step.
 
-Notes
-Dont use this to distribute docker images to untrusted people. It may be possible to get your keys from the docker layers. I have not tested this attack.
+Technically `StrictHostKeyChecking no` opens me up for a man-in-the-middle attack.  Since the man would have to be in the middle of github and github, I think the risk is low.
+
+## Notes
+- Dont use this to distribute docker images to untrusted people.  It may be possible to get your keys from the docker layers.  I have not tested this attack.
